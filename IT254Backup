@@ -1,0 +1,18 @@
+#!/bin/bash
+#createdby:J.Duke
+#createdon:5/22/2020
+#version:1.0
+#description:compresses a file or folder and transfers it to a S3 bucket
+
+#Create variables
+Bkt="s3://jdukeawsclilab"
+Dir=~/environment/files
+
+#Generates random text in a document that is 10MB in size in the listed directory
+base64 /dev/urandom | head -c 10000000 > $Dir/important.txt
+
+#Compresses all files located in the listed directory
+tar -czvf files.tar.gz $Dir/*
+
+#Copies the compressed file to listed s3 bucket
+aws s3 cp files.tar.gz $Bkt
