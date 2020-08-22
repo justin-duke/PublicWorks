@@ -1,0 +1,23 @@
+#Changing directory to final directory
+Set-Location .\final
+
+#Creating invalid.txt
+New-Item "..\invalid.txt" -ItemType file 
+
+# Start of For Loop
+Get-ChildItem "." -Filter *.txt | ForEach-Object {
+
+#Run Get-FileHash on the .txt files
+$Hash=(Get-FileHash -Path "$($_.BaseName).txt" -Algorithm MD5)
+
+#Start of If Statement that compares the FileHash output to the content of the .MD5 file of the same name
+if(Compare-Object -ReferenceObject ($Hash.Hash) -DifferenceObject ($(Get-Content "$($_.BaseName).md5")))
+
+    {"Invalid file: " + "$($_.BaseName).txt"
+    $_.FullName | Add-Content ..\invalid.txt}
+    Else
+    {"$($_.BaseName).txt" + " Hash is the same as " + "$($_.BaseName).md5"}
+}
+
+#Change Directory back from final directory
+Set-Location ..
