@@ -1,0 +1,55 @@
+#!/bin/bash
+
+#Checking for the -c flag and setting the file name variable
+
+if [ "$1" == "" ]; then
+	echo "You should use the -c flag and specify a file." 
+	exit
+fi
+
+while [ "$1" != "" ]; do
+	case $1 in
+       		-c )            shift
+               		        filename=$1
+				shift
+				;;
+		* )		echo "You should use the -c flag"
+				exit
+				;;
+	esac
+done
+
+#Asking user for name and favorite color
+
+echo "What is your name?"
+read name
+
+echo "What is your favorite color?"
+read color
+
+#Checking for tmp/$color directory
+
+if [ -d "/tmp/$color" ]; then
+	echo "Bad Luck, $name."
+	exit
+fi
+
+#Creating the tmp/color directory and moving to the new directory
+
+mkdir /tmp/$color
+
+#Creating document, headers and transposing data
+
+touch /tmp/$color/midterm.csv
+
+cat $filename | awk '{
+
+print  $3 "," $4 "," $5 "," $2
+
+}' > /tmp/$color/midterm.csv
+
+sed -i '1i\Firstname,Lastname,Maildomain,Password' /tmp/$color/midterm.csv
+
+echo "Task Complete"
+
+exit
